@@ -1,0 +1,32 @@
+# @package _global_
+
+experiment: kitti360
+
+model:
+  S: 32
+  K: 6
+  epsilon_freq_L: 0.5
+  encoder:
+    first_res: 0.5
+    n_pools: 6
+  protos:
+    init_with_fixed_y_rotation: True # Set rotation to 0
+    init:
+      - [0.5, 0., -0.5] # Need to be float!!!
+    shape:
+      - box
+  callbacks:
+    curriculum:
+      order:
+        # - protosfeat #related to intensity
+        - protosscale
+        - protos
+        - scale_aniso_L
+        - decay_10
+  decoders:
+    scales:
+      translation_L: 1.2 # default at 1.2
+
+defaults:
+  - /data/kitti360
+  - /model/learnableearthparser

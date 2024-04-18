@@ -1,0 +1,11 @@
+name: render
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - tensorflow==2.15
+  - pip:
+    - numpy
+    - matplotlib
+    - imageio[ffmpeg]
+    - tqdm

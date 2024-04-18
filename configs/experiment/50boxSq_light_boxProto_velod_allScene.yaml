@@ -1,0 +1,40 @@
+# @package _global_
+
+experiment: 50boxSq_light_boxProto_velod_allScene
+
+model:
+  S: 64
+  K: 6
+  masking: clipping
+  epsilon_freq_L: 0.5
+  encoder:
+    first_res: 2.125 #0.5
+    n_pools: 6
+  protos:
+    init_with_fixed_y_rotation: False # Sets init rotation to 0
+    init_with_different_y_rotation: False # Sets init additional different rotation per proto also to 0
+    specific_scale: 0.0368 #.1
+    init: # init proto scale (passes through exp)
+      - [0., 0., 0.] # Need to be float!!!
+    shape:
+      - box
+  transformations:
+  #- scale_aniso_L
+  #- rotY_euler_L
+  #- rotZ_2d_L
+  - translation_L
+  callbacks:
+    curriculum:
+      order:
+        # - protosfeat #related to intensity
+        # - protosscale
+        - protos
+        - scale_aniso_L
+        - decay_10
+  decoders:
+    scales:
+      translation_L: 1.2 # default at 1.2
+
+defaults:
+  - /data/50boxSq_light_velod_allScene
+  - /model/learnableearthparser

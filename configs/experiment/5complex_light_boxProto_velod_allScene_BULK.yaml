@@ -1,0 +1,41 @@
+# @package _global_
+
+experiment: 5complex_light_boxProto_velod_allScene
+
+model:
+  S: 64
+  K: 6
+  masking: gen+self
+  soft_mask: 0 #1e-5 # 0 for a hard (binary) mask 
+  use_gt: False
+  encoder:
+    first_res: 0.5
+    n_pools: 6
+  protos:
+    init_with_fixed_y_rotation: False # Sets init rotation to 0
+    init_with_different_y_rotation: False # Sets init additional different rotation per proto also to 0
+    #specific_scale: 0.3125 #.1
+    init: # init proto scale (passes through exp)
+      - [0., 0., 0.] # Need to be float!!!
+    shape:
+      - box #cube # box is also an option
+  transformations:
+  - scale_aniso_L
+  - rotY_euler_L # can be deactivated to remove rotation
+  - rotZ_2d_L    # can be deactivated to remove rotation
+  - translation_L
+  callbacks:
+    curriculum:
+      order:
+        # - protosfeat #related to intensity
+        - protosscale
+        - protos
+        - scale_aniso_L
+        - decay_10
+  decoders:
+    scales:
+      translation_L: 1.2 # default at 1.2
+
+defaults:
+  - /data/5complex_light_velod_allScene_BULK
+  - /model/learnableearthparser

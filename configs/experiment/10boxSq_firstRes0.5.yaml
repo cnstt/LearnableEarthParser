@@ -1,0 +1,14 @@
+# @package _global_
+
+experiment: 10boxSq_firstRes0.5
+
+model:
+  S: 64
+  K: 1
+  encoder:
+    first_res: 0.5
+    n_pools: 6
+    
+defaults:
+  - /data/10boxSq
+  - /model/learnableearthparser

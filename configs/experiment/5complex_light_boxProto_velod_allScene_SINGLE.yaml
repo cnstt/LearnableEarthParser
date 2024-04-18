@@ -1,0 +1,61 @@
+# @package _global_
+
+experiment: 5complex_light_boxProto_velod_allScene
+
+model:
+  S: 16
+  K: 6
+  masking: gen+self
+  soft_mask: 0 #1e-5 # 0 for a hard (binary) mask 
+  use_gt: False
+  encoder:
+    first_res: 0.5
+    n_pools: 6
+  protos:
+    init_with_fixed_y_rotation: False # Sets init rotation to 0
+    init_with_different_y_rotation: False # Sets init additional different rotation per proto also to 0
+    #specific_scale: 0.3125 #.1
+    init: # init proto scale (passes through exp)
+      - [0., 0., 0.] # Need to be float!!!
+    shape:
+      - box #cube # box is also an option
+  transformations:
+  - scale_aniso_L
+  - rotY_euler_L # can be deactivated to remove rotation
+  - rotZ_2d_L    # can be deactivated to remove rotation
+  - translation_L
+  callbacks:
+    curriculum:
+      order:
+        # - protosfeat #related to intensity
+        - protosscale
+        - protos
+        - scale_aniso_L
+        - decay_10
+      #patience: 50
+      patience_eps: 0.001
+    #earlystopping:
+    #  patience: 100
+  decoders:
+    scales:
+      scale: 1.5 # bigger aniso scale range (default 0.5)
+      translation_L: 1.2 # default at 1.2
+  #lambda_overlap: 1
+  #lambda_PX: 1000.
+  #lambda_freq_K: 0.
+
+  # Possibility to force the assignment of the prototypes: use same prototypes for same GT objects
+  gt_choice: True
+  # If gt_choice is True, `index_to_class_mapping` dict is required (otherwise gt assignement skipped)
+  # `index_to_class_mapping` is a dict mapping objects in the scenes to prototype ids
+  # Config specific to one specific scene!
+  # 0: cylinder, bottom, right
+  # 1: cylinder, top, right
+  # 2: square, top, left
+  # 3: square, middle, right
+  # 4: sphere, bottom, left
+  index_to_class_mapping: {0: 1, 1: 1, 2: 0, 3: 0, 4: 2}
+
+defaults:
+  - /data/5complex_light_velod_allScene_SINGLE
+  - /model/learnableearthparser

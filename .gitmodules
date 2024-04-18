@@ -1,0 +1,3 @@
+[submodule "EarthParserDataset"]
+	path = EarthParserDataset
+	url = https://github.com/cnstt/EarthParserDataset
